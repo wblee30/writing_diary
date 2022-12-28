@@ -3,7 +3,11 @@ import {Text, View, TouchableOpacity, StyleSheet} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from "@react-navigation/native";
 
-const ViewHeader = () => {
+const ViewHeader = ({
+  title,
+  bookmark,
+  bookmarked
+}) => {
 
   const navigation = useNavigation();
 
@@ -18,12 +22,13 @@ const ViewHeader = () => {
       >
         <Icon name="chevron-back-outline" size={28} color="#DA5746"/>
       </TouchableOpacity>
-      <Text style={styles.title}>글 제목</Text>
+      <Text style={styles.title}>{title}</Text>
       <TouchableOpacity 
       activeOpacity={0.8}
       hitSlop={{top:32, bottom: 32, left: 32, right: 32}}
+      onPress={bookmark}
       >
-        <Icon name="heart-outline" size={24} color="#DA5746"/>
+        <Icon name={bookmarked ? "heart": "heart-outline"}  size={24} color="#DA5746"/>
       </TouchableOpacity>
     </View>
   )

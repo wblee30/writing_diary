@@ -1,18 +1,31 @@
 import React from 'react'
 import {View, StyleSheet, SafeAreaView, Text, ScrollView, TouchableOpacity} from 'react-native'
 import ViewHeader from '../components/ViewHeader'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import {withContext} from 'react-simplified-context'
 
-const ViewScreen = () => {
+const ViewScreen = ({
+  articles,
+  toggle
+}) => {
   const navigation = useNavigation();
-
+  const route = useRoute();
+  const id = route.params.id;
+  const article = articles.find((a) => {
+    return a.id === id
+  })
   return (
     <SafeAreaView style={styles.container}>
-      <ViewHeader/>
+      <ViewHeader 
+      title ={article.title}
+      bookmarked = {article.bookmarked}
+      bookmark={() => {
+        toggle(id)
+      }}/>
       <ScrollView>
-        <TouchableOpacity activeOpacity={0.8} onLongPress={()=> {navigation.navigate('Edit'); }}>
-          <Text style={styles.content}>잠겨죽어도 좋으니 너는 물처럼 내게 밀려오라</Text>
-          <Text style={styles.date}>2022년 12월 28일</Text>
+        <TouchableOpacity activeOpacity={0.8} onLongPress={()=> {navigation.navigate('Edit', {id:id}); }}>
+          <Text style={styles.content}>{article.content}</Text>
+          <Text style={styles.date}>{article.date}</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -37,4 +50,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ViewScreen
+export default withContext(ViewScreen)

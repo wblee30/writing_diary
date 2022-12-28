@@ -1,27 +1,24 @@
 import React from 'react';
 import Navigator from './Navigator';
 import { ContextProvider } from 'react-simplified-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class App extends React.Component {
   state = {
-    articles: [{
-      id: 1,
-      title: '청춘의 시',
-      content: '잠겨죽어도 좋으니 너는 물처럼 내게 밀려오라',
-      date: '2019년 4월 7일',
-      bookmarked: true,
-    },
-    {
-      id: 2,
-      title: '내 마음에 ',
-      content: '크리스마스',
-      date: '2022년 12월 25일'
-    }],
-    id:3,
+    articles: [],
+    id:0,
   };
 
-  render() {
+  componentDidMount(){
+    AsyncStorage.getItem('@diary:state').then((state) => {
+      this.setState(JSON.parse(state))
+    })
+  }
+  save = () => {
+    AsyncStorage.setItem('@diary:state', JSON.stringify(this.state))
+  }
 
+  render() {
     return(
       <ContextProvider 
         articles={this.state.articles} 
@@ -30,14 +27,36 @@ export default class App extends React.Component {
           this.setState({
             articles: [{
               id: this.state.id,
-              title: title, 
+              title: title,
               content: content,
               bookmarked: false,
-              data: `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`,
+              date: `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`,
             }].concat(this.state.articles),
             id: this.state.id+1,
+          }, this.save)
+        }}
+        update={(id, title, content) => {
+            const newArticles = [...this.state.articles]
+            const index = newArticles.findIndex((a) => {
+              return a.id === id
+            })
+            newArticles[index].title = title
+            newArticles[index].content = content
+            this.setState({
+              articles: newArticles,
+            }, this.save)
+        }}
+        toggle={(id) => {
+          const newArticles = [...this.state.articles]
+          const index = newArticles.findIndex((a) => {
+            return a.id === id
           })
-      }}>
+          newArticles[index].bookmarked = !newArticles[index].bookmarked
+          this.setState({
+            articles: newArticles,
+          }, this.save)
+      }}
+      >
          <Navigator />
       </ContextProvider>
     );

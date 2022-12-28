@@ -14,7 +14,7 @@ const ArticleItem = ({
   const navigation = useNavigation();
 
   return(
-    <TouchableOpacity activeOpacity={0.8} onPress={() => {navigation.navigate('View')}}>
+    <TouchableOpacity activeOpacity={0.8} onPress={() => {navigation.navigate('View', {id: id})}}>
       <View style={styles.container}>
         <View style={styles.icon}>
           <Ionicons name="md-list" size={14} color="#9E9E9E" />

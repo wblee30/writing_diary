@@ -1,18 +1,32 @@
 import React from 'react'
 import {Text, SafeAreaView, StyleSheet, TextInput, View} from 'react-native'
 import EditHeader from '../components/EditHeader';
-import {withContext} from 'react-simplified-context';
+import {useRoute} from '@react-navigation/native'
+import {withContext} from 'react-simplified-context'
+
 
 const EditScreen = ({
+  articles, 
   create,
-}) =>{
-  let title = ''
-  let content = ''
-
+  // id,
+  update
+}) =>{ 
+  const route = useRoute();
+    // ViewScreen에서 id값이 넘어오기때문에 이중으로 정의하면 에러남
+  const id = route.params ? route.params.id : -1;
+  const article = articles.find((a) => {
+    return a.id === id
+  });
+  let title = article ? article.title : ''
+  let content = article ? article.content : ''
   return(
     <SafeAreaView style={styles.container}>
       <EditHeader done={() => {
-        create(title, content) 
+        if(id > -1){
+            update(id, title, content)
+        }else {
+            create(title, content) 
+        }
       }}/>
       <View style={styles.body}>
         <TextInput 
@@ -20,7 +34,9 @@ const EditScreen = ({
           onChangeText={(text) => {
             title = text
           }}
-          style={styles.title}/>
+          style={styles.title}>
+            {title}
+        </TextInput>
         <View style={styles.divider}/>
         <TextInput 
           placeholder='이곳을 눌러 작성을 시작하세요.' 
@@ -28,7 +44,9 @@ const EditScreen = ({
           onChangeText={(text) => {
             content = text
           }}
-          style={styles.content} />
+          style={styles.content}>
+            {content}
+        </TextInput>
       </View>
     </SafeAreaView>
   );
