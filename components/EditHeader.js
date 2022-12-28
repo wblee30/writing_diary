@@ -1,9 +1,13 @@
 import React from "react";
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
 
-const EditHeader = () => {
+const EditHeader = (
+  {
+    done
+}
+) => {
 
   const navigation = useNavigation();
 
@@ -21,6 +25,10 @@ const EditHeader = () => {
       <TouchableOpacity 
       activeOpacity={0.8}
       hitSlop={{top:32, bottom: 32, left: 32, right: 32}}
+      onPress={() => {
+        done()
+        navigation.goBack()
+      }}
       >
         <Text style={styles.done}>완료</Text>
       </TouchableOpacity>
